@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Basic Colors -->
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Brand SakuKu -->
+    <color name="pine_primary">#0E4D3B</color>
+    <color name="pine_deep">#0A382B</color>
+    <color name="pine_subtle">#E6F2EE</color>
+    <color name="lime_accent">#B8F255</color>
+
+    <!-- Surface & Background -->
+    <color name="canvas_stone">#F6F7F4</color>
+    <color name="surface_white">#FFFFFF</color>
+    <color name="surface_muted">#EEEFEA</color>
+    <color name="border_control">#849088</color>
+
+    <!-- Typography -->
+    <color name="text_primary">#111814</color>
+    <color name="text_secondary">#46524B</color>
+    <color name="text_muted">#5C6961</color>
+
+    <!-- Financial Status -->
+    <color name="income_green">#15803D</color>
+    <color name="expense_rose">#BE123C</color>
+    <color name="budget_amber">#B45309</color>
+</resources>

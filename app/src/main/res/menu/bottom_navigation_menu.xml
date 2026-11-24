@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/itemBeranda"
+        android:icon="@drawable/baseline_home_24"
+        android:title="@string/title_beranda" />
+    <item
+        android:id="@+id/itemRiwayat"
+        android:icon="@drawable/baseline_history_24"
+        android:title="@string/title_riwayat" />
+    <item
+        android:id="@+id/itemAnalisis"
+        android:icon="@drawable/baseline_pie_chart_24"
+        android:title="@string/title_analisis" />
+    <item
+        android:id="@+id/itemAkun"
+        android:icon="@drawable/baseline_person_24"
+        android:title="@string/title_akun" />
+</menu>

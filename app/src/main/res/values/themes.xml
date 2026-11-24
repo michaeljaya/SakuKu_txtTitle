@@ -1,0 +1,39 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.SakuKu" parent="Theme.Material3.Light.NoActionBar">
+        <!-- Brand Colors -->
+        <item name="colorPrimary">@color/pine_primary</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimaryContainer">@color/pine_subtle</item>
+        <item name="colorOnPrimaryContainer">@color/pine_primary</item>
+
+        <item name="colorSecondary">@color/lime_accent</item>
+        <item name="colorOnSecondary">@color/pine_deep</item>
+        <item name="colorSecondaryContainer">@android:color/transparent</item>
+        <item name="colorOnSecondaryContainer">@color/pine_primary</item>
+
+        <item name="colorSurface">@color/white</item>
+        <item name="colorOnSurface">@color/text_primary</item>
+
+        <!-- Status bar & Window -->
+        <item name="android:statusBarColor">@color/pine_primary</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowBackground">@color/canvas_stone</item>
+
+        <!-- Rounded Bottom Navigation Bar -->
+        <item name="bottomNavigationStyle">@style/Widget.SakuKu.BottomNavigationView</item>
+    </style>
+
+    <style name="Theme.SakuKu" parent="Base.Theme.SakuKu" />
+
+    <style name="Widget.SakuKu.BottomNavigationView" parent="Widget.Material3.BottomNavigationView">
+        <item name="shapeAppearance">@style/ShapeAppearance.SakuKu.BottomNav</item>
+    </style>
+
+    <style name="ShapeAppearance.SakuKu.BottomNav" parent="">
+        <item name="cornerSizeTopLeft">20dp</item>
+        <item name="cornerSizeTopRight">20dp</item>
+        <item name="cornerSizeBottomLeft">0dp</item>
+        <item name="cornerSizeBottomRight">0dp</item>
+    </style>
+</resources>

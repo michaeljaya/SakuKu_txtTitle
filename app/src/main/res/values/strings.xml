@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">SakuKu</string>
+    <string name="title_beranda">Beranda</string>
+    <string name="title_riwayat">Riwayat</string>
+    <string name="title_analisis">Analisis</string>
+    <string name="title_akun">Akun</string>
+</resources>
