@@ -31,13 +31,7 @@
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
 
-        <!-- Activity 3: Form Catat Transaksi Baru -->
-        <activity
-            android:name=".CatatTransaksiActivity"
-            android:exported="false"
-            android:windowSoftInputMode="adjustResize" />
-
-        <!-- Activity 4: Detail Transaksi & Implicit Intent -->
+        <!-- Activity 3: Detail Transaksi & Implicit Intent -->
         <activity
             android:name=".DetailTransaksiActivity"
             android:exported="false" />

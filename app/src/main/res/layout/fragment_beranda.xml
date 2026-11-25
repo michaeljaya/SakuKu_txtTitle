@@ -20,7 +20,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="96dp">
+            android:paddingBottom="24dp">
 
             <!-- Header Salam SakuKu & Ucapan Pengguna -->
             <TextView
@@ -260,20 +260,5 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
-
-    <!-- FAB Catat Transaksi Cepat Berada di Root ConstraintLayout -->
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabTambah"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="24dp"
-        android:backgroundTint="@color/pine_primary"
-        android:contentDescription="Catat Transaksi"
-        android:src="@drawable/baseline_add_24"
-        app:elevation="6dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:tint="@color/lime_accent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

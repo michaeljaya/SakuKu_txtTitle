@@ -9,6 +9,10 @@
         android:icon="@drawable/baseline_history_24"
         android:title="@string/title_riwayat" />
     <item
+        android:id="@+id/itemCatat"
+        android:icon="@android:color/transparent"
+        android:title="" />
+    <item
         android:id="@+id/itemAnalisis"
         android:icon="@drawable/baseline_pie_chart_24"
         android:title="@string/title_analisis" />

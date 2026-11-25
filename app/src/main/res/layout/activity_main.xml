@@ -33,4 +33,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/bottom_navigation_menu" />
 
+    <!-- Tombol Lingkaran Hijau (+) di Tengah Navbar -->
+    <ImageView
+        android:id="@+id/btnNavCatat"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="@drawable/bg_nav_catat"
+        android:contentDescription="@string/title_catat"
+        android:elevation="8dp"
+        android:padding="12dp"
+        android:src="@drawable/baseline_add_24"
+        app:layout_constraintBottom_toBottomOf="@+id/bottomNav"
+        app:layout_constraintEnd_toEndOf="@+id/bottomNav"
+        app:layout_constraintStart_toStartOf="@+id/bottomNav"
+        app:layout_constraintTop_toTopOf="@+id/bottomNav"
+        app:tint="@color/white" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
