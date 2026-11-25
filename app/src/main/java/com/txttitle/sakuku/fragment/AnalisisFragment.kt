@@ -1,11 +1,11 @@
-package com.michael.sakuku.fragment
+package com.txttitle.sakuku.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.michael.sakuku.databinding.FragmentAnalisisBinding
+import com.txttitle.sakuku.databinding.FragmentAnalisisBinding
 
 class AnalisisFragment : Fragment() {
 

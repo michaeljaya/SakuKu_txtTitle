@@ -1,4 +1,4 @@
-package com.michael.sakuku.fragment
+package com.txttitle.sakuku.fragment
 
 import android.content.Context
 import android.content.Intent
@@ -8,9 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.michael.sakuku.CatatTransaksiActivity
-import com.michael.sakuku.R
-import com.michael.sakuku.databinding.FragmentBerandaBinding
+import com.txttitle.sakuku.CatatTransaksiActivity
+import com.txttitle.sakuku.R
+import com.txttitle.sakuku.databinding.FragmentBerandaBinding
 
 class BerandaFragment : Fragment() {
 

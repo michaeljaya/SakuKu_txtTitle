@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace = "com.michael.sakuku"
+    namespace = "com.txttitle.sakuku"
     compileSdk {
         version = release(37)
     }
@@ -13,7 +13,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.michael.sakuku"
+        applicationId = "com.txttitle.sakuku"
         minSdk = 26
         targetSdk = 37
         versionCode = 1

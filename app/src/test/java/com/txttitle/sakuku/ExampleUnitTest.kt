@@ -1,4 +1,4 @@
-package com.michael.sakuku
+package com.txttitle.sakuku
 
 import org.junit.Test
 

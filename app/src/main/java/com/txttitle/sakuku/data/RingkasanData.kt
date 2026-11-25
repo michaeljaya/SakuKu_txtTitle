@@ -1,4 +1,4 @@
-package com.michael.sakuku.data
+package com.txttitle.sakuku.data
 
 data class RingkasanData(
     val total_transaksi: Int = 0,

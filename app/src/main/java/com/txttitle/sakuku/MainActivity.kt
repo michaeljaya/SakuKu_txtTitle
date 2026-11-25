@@ -1,15 +1,15 @@
-package com.michael.sakuku
+package com.txttitle.sakuku
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
-import com.michael.sakuku.adapter.VIewPagerAdapter
-import com.michael.sakuku.databinding.ActivityMainBinding
-import com.michael.sakuku.fragment.AkunFragment
-import com.michael.sakuku.fragment.AnalisisFragment
-import com.michael.sakuku.fragment.BerandaFragment
-import com.michael.sakuku.fragment.RiwayatFragment
+import com.txttitle.sakuku.adapter.VIewPagerAdapter
+import com.txttitle.sakuku.databinding.ActivityMainBinding
+import com.txttitle.sakuku.fragment.AkunFragment
+import com.txttitle.sakuku.fragment.AnalisisFragment
+import com.txttitle.sakuku.fragment.BerandaFragment
+import com.txttitle.sakuku.fragment.RiwayatFragment
 
 class MainActivity : AppCompatActivity() {
 

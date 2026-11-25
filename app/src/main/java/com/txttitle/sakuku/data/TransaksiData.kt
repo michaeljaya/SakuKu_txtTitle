@@ -1,4 +1,4 @@
-package com.michael.sakuku.data
+package com.txttitle.sakuku.data
 
 import java.io.Serializable
 

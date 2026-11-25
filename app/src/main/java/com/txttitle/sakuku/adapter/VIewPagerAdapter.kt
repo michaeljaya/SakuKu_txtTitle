@@ -1,4 +1,4 @@
-package com.michael.sakuku.adapter
+package com.txttitle.sakuku.adapter
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment

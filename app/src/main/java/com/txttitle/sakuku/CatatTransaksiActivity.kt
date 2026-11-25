@@ -1,9 +1,9 @@
-package com.michael.sakuku
+package com.txttitle.sakuku
 
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
-import com.michael.sakuku.databinding.ActivityCatatTransaksiBinding
+import com.txttitle.sakuku.databinding.ActivityCatatTransaksiBinding
 
 class CatatTransaksiActivity : AppCompatActivity() {
 

@@ -1,9 +1,9 @@
-package com.michael.sakuku
+package com.txttitle.sakuku
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.michael.sakuku.data.TransaksiData
-import com.michael.sakuku.databinding.ActivityDetailTransaksiBinding
+import com.txttitle.sakuku.data.TransaksiData
+import com.txttitle.sakuku.databinding.ActivityDetailTransaksiBinding
 import java.text.NumberFormat
 import java.util.Locale
 

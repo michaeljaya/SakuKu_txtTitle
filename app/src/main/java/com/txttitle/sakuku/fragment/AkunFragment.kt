@@ -1,4 +1,4 @@
-package com.michael.sakuku.fragment
+package com.txttitle.sakuku.fragment
 
 import android.content.Context
 import android.os.Bundle
@@ -11,8 +11,8 @@ import androidx.fragment.app.Fragment
 import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import com.michael.sakuku.R
-import com.michael.sakuku.databinding.FragmentAkunBinding
+import com.txttitle.sakuku.R
+import com.txttitle.sakuku.databinding.FragmentAkunBinding
 import org.json.JSONObject
 
 class AkunFragment : Fragment() {
