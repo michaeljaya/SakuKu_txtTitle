@@ -8,6 +8,8 @@ import com.txttitle.sakuku.DetailTransaksiActivity
 import com.txttitle.sakuku.R
 import com.txttitle.sakuku.data.TransaksiData
 import com.txttitle.sakuku.databinding.CardTransaksiBinding
+import java.text.NumberFormat
+import java.util.Locale
 
 class TransaksiAdapter(val listTransaksi: ArrayList<TransaksiData>) :
     RecyclerView.Adapter<TransaksiAdapter.TransaksiViewHolder>() {
@@ -19,22 +21,21 @@ class TransaksiAdapter(val listTransaksi: ArrayList<TransaksiData>) :
         return TransaksiViewHolder(binding)
     }
 
-    // Ini Untuk Menampilkan diBeranda Misal:
-    // Kopi Kenangan
-    // Makan & Minum . Metode . Tanggalnya
     override fun onBindViewHolder(holder: TransaksiViewHolder, position: Int) {
         val item = listTransaksi[position]
-        val nominalBulat = item.nominal.toInt()
+        val formatter = NumberFormat.getNumberInstance(Locale.forLanguageTag("id-ID"))
+        formatter.maximumFractionDigits = 0
+        val nominalFormat = formatter.format(item.nominal)
 
         with(holder.binding) {
             txtJudul.text = item.judul
             txtSubDetail.text = "${item.kategori} · ${item.kantong} · ${item.tanggal}"
 
             if (item.tipe == "PEMASUKAN") {
-                txtNominal.text = "+Rp $nominalBulat"
+                txtNominal.text = "+Rp $nominalFormat"
                 txtNominal.setTextColor(root.context.getColor(R.color.income_green))
             } else {
-                txtNominal.text = "-Rp $nominalBulat"
+                txtNominal.text = "-Rp $nominalFormat"
                 txtNominal.setTextColor(root.context.getColor(R.color.expense_rose))
             }
 

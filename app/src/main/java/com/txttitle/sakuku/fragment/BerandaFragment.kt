@@ -1,10 +1,13 @@
 package com.txttitle.sakuku.fragment
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.volley.Request
@@ -19,11 +22,14 @@ import com.txttitle.sakuku.data.RingkasanData
 import com.txttitle.sakuku.data.TransaksiData
 import com.txttitle.sakuku.databinding.FragmentBerandaBinding
 import org.json.JSONObject
+import java.text.NumberFormat
+import java.util.Locale
 
 class BerandaFragment : Fragment() {
 
     private lateinit var binding: FragmentBerandaBinding
     var recentList: ArrayList<TransaksiData> = ArrayList()
+    private var isDataTerhubung = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -39,6 +45,18 @@ class BerandaFragment : Fragment() {
         binding.txtLihatSemua.setOnClickListener {
             activity?.findViewById<BottomNavigationView>(R.id.bottomNav)?.selectedItemId = R.id.itemRiwayat
         }
+
+        // Klik ikon status untuk melihat keterangan & menyegarkan data server
+        binding.imgStatusData.setOnClickListener {
+            val pesan = if (isDataTerhubung) {
+                "Status Data: Tersambung ke server"
+            } else {
+                "Status Data: Terputus dari server"
+            }
+            Toast.makeText(activity, pesan, Toast.LENGTH_SHORT).show()
+            loadRingkasan()
+            loadRecentTransaksi()
+        }
     }
 
     override fun onResume() {
@@ -46,6 +64,31 @@ class BerandaFragment : Fragment() {
         updateGreeting()
         loadRingkasan()
         loadRecentTransaksi()
+    }
+
+    // Format angka nominal dengan pemisah ribuan titik (contoh: 16.476.000)
+    private fun formatAngka(nilai: Double): String {
+        val formatter = NumberFormat.getNumberInstance(Locale.forLanguageTag("id-ID"))
+        formatter.maximumFractionDigits = 0
+        return formatter.format(nilai)
+    }
+
+    // Perbarui warna & ikon status koneksi server (pine_primary = terhubung, expense_rose = terputus)
+    private fun updateStatusData(terhubung: Boolean) {
+        isDataTerhubung = terhubung
+        context?.let { ctx ->
+            if (terhubung) {
+                binding.imgStatusData.setImageResource(R.drawable.baseline_cloud_done_24)
+                binding.imgStatusData.imageTintList = ColorStateList.valueOf(
+                    ContextCompat.getColor(ctx, R.color.pine_primary)
+                )
+            } else {
+                binding.imgStatusData.setImageResource(R.drawable.baseline_cloud_off_24)
+                binding.imgStatusData.imageTintList = ColorStateList.valueOf(
+                    ContextCompat.getColor(ctx, R.color.expense_rose)
+                )
+            }
+        }
     }
 
     // Menampilkan ucapan dengan nama pengguna yang tersimpan
@@ -68,38 +111,54 @@ class BerandaFragment : Fragment() {
             url,
             { response ->
                 if (activity != null) {
-                    val obj = JSONObject(response)
-                    if (obj.getString("result") == "SUCCESS") {
-                        val data = obj.getJSONObject("data")
-                        val ringkasan = Gson().fromJson(data.toString(), RingkasanData::class.java)
+                    try {
+                        val obj = JSONObject(response)
+                        if (obj.getString("result") == "SUCCESS") {
+                            updateStatusData(true)
+                            val data = obj.getJSONObject("data")
+                            val ringkasan = Gson().fromJson(data.toString(), RingkasanData::class.java)
 
-                        binding.txtTotalSaldo.text = "Rp ${ringkasan.total_saldo.toInt()}"
-                        binding.txtTotalMasuk.text = "+Rp ${ringkasan.total_masuk.toInt()}"
-                        binding.txtTotalKeluar.text = "-Rp ${ringkasan.total_keluar.toInt()}"
+                            binding.txtTotalSaldo.text = if (ringkasan.total_saldo < 0) {
+                                "-Rp ${formatAngka(-ringkasan.total_saldo)}"
+                            } else {
+                                "Rp ${formatAngka(ringkasan.total_saldo)}"
+                            }
+                            binding.txtTotalMasuk.text = "+Rp ${formatAngka(ringkasan.total_masuk)}"
+                            binding.txtTotalKeluar.text = "-Rp ${formatAngka(ringkasan.total_keluar)}"
 
-                        // Hitung persentase pemakaian anggaran untuk ProgressBar
-                        val persen = if (ringkasan.total_masuk > 0) {
-                            ((ringkasan.total_keluar / ringkasan.total_masuk) * 100).toInt()
-                        } else if (ringkasan.total_keluar > 0) {
-                            100
+                            // Hitung persentase pemakaian anggaran untuk ProgressBar
+                            val persen = if (ringkasan.total_masuk > 0) {
+                                ((ringkasan.total_keluar / ringkasan.total_masuk) * 100).toInt()
+                            } else if (ringkasan.total_keluar > 0) {
+                                100
+                            } else {
+                                0
+                            }
+
+                            val progressNilai = if (persen > 100) 100 else persen
+                            binding.progressAnggaran.max = 100
+                            binding.progressAnggaran.progress = progressNilai
+                            binding.txtPersenAnggaran.text = "$persen% terpakai"
+
+                            if (persen > 80) {
+                                binding.txtKetAnggaran.text = "Pengeluaran mendekati atau melebihi pemasukan bulan ini."
+                            } else {
+                                binding.txtKetAnggaran.text = "Sisa saldo terkontrol aman untuk bulan berjalan."
+                            }
                         } else {
-                            0
+                            updateStatusData(false)
                         }
-
-                        val progressNilai = if (persen > 100) 100 else persen
-                        binding.progressAnggaran.max = 100
-                        binding.progressAnggaran.progress = progressNilai
-                        binding.txtPersenAnggaran.text = "$persen% terpakai"
-
-                        if (persen > 80) {
-                            binding.txtKetAnggaran.text = "Pengeluaran mendekati atau melebihi pemasukan bulan ini."
-                        } else {
-                            binding.txtKetAnggaran.text = "Sisa saldo terkontrol aman untuk bulan berjalan."
-                        }
+                    } catch (e: Exception) {
+                        updateStatusData(false)
                     }
                 }
             },
-            { it.printStackTrace() }
+            {
+                it.printStackTrace()
+                if (activity != null) {
+                    updateStatusData(false)
+                }
+            }
         )
         q.add(sr)
     }
@@ -113,27 +172,38 @@ class BerandaFragment : Fragment() {
             url,
             { response ->
                 if (activity != null) {
-                    val obj = JSONObject(response)
-                    if (obj.getString("result") == "SUCCESS") {
-                        val data = obj.getJSONArray("data")
-                        val sType = object : TypeToken<List<TransaksiData>>() {}.type
-                        val allList = Gson().fromJson<ArrayList<TransaksiData>>(data.toString(), sType)
+                    try {
+                        val obj = JSONObject(response)
+                        if (obj.getString("result") == "SUCCESS") {
+                            val data = obj.getJSONArray("data")
+                            val sType = object : TypeToken<List<TransaksiData>>() {}.type
+                            val allList = Gson().fromJson<ArrayList<TransaksiData>>(data.toString(), sType)
 
-                        recentList.clear()
-                        val batas = if (allList.size > 5) 5 else allList.size
-                        for (i in 0 until batas) {
-                            recentList.add(allList[i])
-                        }
+                            recentList.clear()
+                            val batas = if (allList.size > 5) 5 else allList.size
+                            for (i in 0 until batas) {
+                                recentList.add(allList[i])
+                            }
 
-                        with(binding.rvRecentTransaksi) {
-                            layoutManager = LinearLayoutManager(activity)
-                            setHasFixedSize(true)
-                            adapter = TransaksiAdapter(recentList)
+                            with(binding.rvRecentTransaksi) {
+                                layoutManager = LinearLayoutManager(activity)
+                                setHasFixedSize(true)
+                                adapter = TransaksiAdapter(recentList)
+                            }
+                        } else {
+                            updateStatusData(false)
                         }
+                    } catch (e: Exception) {
+                        updateStatusData(false)
                     }
                 }
             },
-            { it.printStackTrace() }
+            {
+                it.printStackTrace()
+                if (activity != null) {
+                    updateStatusData(false)
+                }
+            }
         )
         q.add(sr)
     }

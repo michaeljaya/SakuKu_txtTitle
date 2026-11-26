@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
@@ -87,41 +86,28 @@ class AkunFragment : Fragment() {
             Request.Method.GET,
             url,
             { response ->
-                try {
-                    val obj = JSONObject(response)
-                    if (obj.getString("result") == "SUCCESS") {
-                        val data = obj.getJSONObject("data")
-                        val totalTransaksi = data.optInt("total_transaksi", 0)
-
-                        binding.txtTotalCatatan.text = "$totalTransaksi Catatan"
-                        binding.txtStatusData.text = "Tersambung"
-                        context?.let { ctx ->
-                            binding.txtStatusData.setTextColor(
-                                ContextCompat.getColor(ctx, R.color.income_green)
-                            )
+                if (activity != null) {
+                    try {
+                        val obj = JSONObject(response)
+                        if (obj.getString("result") == "SUCCESS") {
+                            val data = obj.getJSONObject("data")
+                            val totalTransaksi = data.optInt("total_transaksi", 0)
+                            binding.txtTotalCatatan.text = "$totalTransaksi Catatan"
+                        } else {
+                            binding.txtTotalCatatan.text = "0 Catatan"
                         }
-                    } else {
-                        tampilkanStatusTerputus()
+                    } catch (e: Exception) {
+                        binding.txtTotalCatatan.text = "0 Catatan"
                     }
-                } catch (e: Exception) {
-                    tampilkanStatusTerputus()
                 }
             },
             {
-                tampilkanStatusTerputus()
+                if (activity != null) {
+                    binding.txtTotalCatatan.text = "0 Catatan"
+                }
             }
         )
         q.add(sr)
-    }
-
-    private fun tampilkanStatusTerputus() {
-        binding.txtTotalCatatan.text = "0 Catatan"
-        binding.txtStatusData.text = "Terputus"
-        context?.let { ctx ->
-            binding.txtStatusData.setTextColor(
-                ContextCompat.getColor(ctx, R.color.expense_rose)
-            )
-        }
     }
 
     private fun tampilkanNama(name: String) {

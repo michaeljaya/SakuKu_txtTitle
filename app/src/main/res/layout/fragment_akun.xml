@@ -199,7 +199,7 @@
                     android:id="@+id/lblStatistikTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Statistik dan Status Sistem"
+                    android:text="Statistik Akun"
                     android:textColor="@color/text_primary"
                     android:textSize="16sp"
                     android:textStyle="bold"
@@ -211,7 +211,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:text="Ringkasan data &amp; status aplikasi"
+                    android:text="Ringkasan catatan &amp; informasi aplikasi"
                     android:textColor="@color/text_muted"
                     android:textSize="12sp"
                     app:layout_constraintStart_toStartOf="parent"
@@ -262,42 +262,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/lblTotalCatatan" />
 
-                <!-- Baris 2: Status Data (Tersambung / Terputus) -->
-                <TextView
-                    android:id="@+id/lblStatusData"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:text="Status Data"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="14sp"
-                    app:layout_constraintEnd_toStartOf="@+id/txtStatusData"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/dividerStatistik2" />
-
-                <TextView
-                    android:id="@+id/txtStatusData"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Tersambung"
-                    android:textColor="@color/income_green"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="@+id/lblStatusData"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/lblStatusData" />
-
-                <View
-                    android:id="@+id/dividerStatistik3"
-                    android:layout_width="0dp"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="12dp"
-                    android:background="@color/surface_muted"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/lblStatusData" />
-
-                <!-- Baris 3: Versi Aplikasi -->
+                <!-- Baris 2: Versi Aplikasi -->
                 <TextView
                     android:id="@+id/lblAppVersion"
                     android:layout_width="0dp"
@@ -308,7 +273,7 @@
                     android:textSize="14sp"
                     app:layout_constraintEnd_toStartOf="@+id/txtAppVersion"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/dividerStatistik3" />
+                    app:layout_constraintTop_toBottomOf="@+id/dividerStatistik2" />
 
                 <TextView
                     android:id="@+id/txtAppVersion"
