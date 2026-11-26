@@ -4,23 +4,31 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/pine_primary">
+    android:background="@color/canvas_stone">
 
-    <!-- Ikon Logo SakuKu -->
-    <ImageView
-        android:id="@+id/imgLogoSplash"
-        android:layout_width="96dp"
-        android:layout_height="96dp"
-        android:background="@drawable/bg_spinner"
-        android:backgroundTint="@color/pine_deep"
-        android:padding="20dp"
-        android:src="@drawable/baseline_receipt_long_24"
+    <!-- Logo Aplikasi SakuKu -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardLogoSplash"
+        android:layout_width="104dp"
+        android:layout_height="104dp"
+        app:cardBackgroundColor="@color/pine_primary"
+        app:cardCornerRadius="24dp"
+        app:cardElevation="6dp"
         app:layout_constraintBottom_toTopOf="@+id/txtSplashTitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed"
-        app:tint="@color/lime_accent" />
+        app:layout_constraintVertical_chainStyle="packed">
+
+        <ImageView
+            android:id="@+id/imgLogoSplash"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter"
+            android:scaleX="1.62"
+            android:scaleY="1.62"
+            android:src="@drawable/sakuku_launcher_fg" />
+    </androidx.cardview.widget.CardView>
 
     <!-- Judul Aplikasi -->
     <TextView
@@ -29,13 +37,13 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:text="@string/app_name"
-        android:textColor="@color/surface_white"
+        android:textColor="@color/pine_primary"
         android:textSize="32sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/txtSplashSubtitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imgLogoSplash" />
+        app:layout_constraintTop_toBottomOf="@+id/cardLogoSplash" />
 
     <!-- Tagline Subtitle -->
     <TextView
@@ -44,7 +52,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="Pencatat Keuangan Sederhana"
-        android:textColor="@color/pine_subtle"
+        android:textColor="@color/text_secondary"
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
