@@ -6,13 +6,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.android.volley.Request
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.txttitle.sakuku.R
+import com.txttitle.sakuku.adapter.TransaksiAdapter
+import com.txttitle.sakuku.data.RingkasanData
+import com.txttitle.sakuku.data.TransaksiData
 import com.txttitle.sakuku.databinding.FragmentBerandaBinding
+import org.json.JSONObject
 
 class BerandaFragment : Fragment() {
 
     private lateinit var binding: FragmentBerandaBinding
+    var recentList: ArrayList<TransaksiData> = ArrayList()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -33,6 +44,8 @@ class BerandaFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         updateGreeting()
+        loadRingkasan()
+        loadRecentTransaksi()
     }
 
     // Menampilkan ucapan dengan nama pengguna yang tersimpan
@@ -44,5 +57,84 @@ class BerandaFragment : Fragment() {
         } else {
             binding.txtGreeting.text = "Halo, Pengguna"
         }
+    }
+
+    // Ambil ringkasan saldo, pemasukan, pengeluaran dari get_ringkasan.php
+    private fun loadRingkasan() {
+        val url = "http://10.0.2.2/sakuku/get_ringkasan.php"
+        val q = Volley.newRequestQueue(activity)
+        val sr = StringRequest(
+            Request.Method.GET,
+            url,
+            { response ->
+                if (activity != null) {
+                    val obj = JSONObject(response)
+                    if (obj.getString("result") == "SUCCESS") {
+                        val data = obj.getJSONObject("data")
+                        val ringkasan = Gson().fromJson(data.toString(), RingkasanData::class.java)
+
+                        binding.txtTotalSaldo.text = "Rp ${ringkasan.total_saldo.toInt()}"
+                        binding.txtTotalMasuk.text = "+Rp ${ringkasan.total_masuk.toInt()}"
+                        binding.txtTotalKeluar.text = "-Rp ${ringkasan.total_keluar.toInt()}"
+
+                        // Hitung persentase pemakaian anggaran untuk ProgressBar
+                        val persen = if (ringkasan.total_masuk > 0) {
+                            ((ringkasan.total_keluar / ringkasan.total_masuk) * 100).toInt()
+                        } else if (ringkasan.total_keluar > 0) {
+                            100
+                        } else {
+                            0
+                        }
+
+                        val progressNilai = if (persen > 100) 100 else persen
+                        binding.progressAnggaran.max = 100
+                        binding.progressAnggaran.progress = progressNilai
+                        binding.txtPersenAnggaran.text = "$persen% terpakai"
+
+                        if (persen > 80) {
+                            binding.txtKetAnggaran.text = "Pengeluaran mendekati atau melebihi pemasukan bulan ini."
+                        } else {
+                            binding.txtKetAnggaran.text = "Sisa saldo terkontrol aman untuk bulan berjalan."
+                        }
+                    }
+                }
+            },
+            { it.printStackTrace() }
+        )
+        q.add(sr)
+    }
+
+    // Ambil maksimal 5 transaksi terbaru dari get_transaksi.php
+    private fun loadRecentTransaksi() {
+        val url = "http://10.0.2.2/sakuku/get_transaksi.php"
+        val q = Volley.newRequestQueue(activity)
+        val sr = StringRequest(
+            Request.Method.POST,
+            url,
+            { response ->
+                if (activity != null) {
+                    val obj = JSONObject(response)
+                    if (obj.getString("result") == "SUCCESS") {
+                        val data = obj.getJSONArray("data")
+                        val sType = object : TypeToken<List<TransaksiData>>() {}.type
+                        val allList = Gson().fromJson<ArrayList<TransaksiData>>(data.toString(), sType)
+
+                        recentList.clear()
+                        val batas = if (allList.size > 5) 5 else allList.size
+                        for (i in 0 until batas) {
+                            recentList.add(allList[i])
+                        }
+
+                        with(binding.rvRecentTransaksi) {
+                            layoutManager = LinearLayoutManager(activity)
+                            setHasFixedSize(true)
+                            adapter = TransaksiAdapter(recentList)
+                        }
+                    }
+                }
+            },
+            { it.printStackTrace() }
+        )
+        q.add(sr)
     }
 }

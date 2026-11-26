@@ -19,6 +19,9 @@ class TransaksiAdapter(val listTransaksi: ArrayList<TransaksiData>) :
         return TransaksiViewHolder(binding)
     }
 
+    // Ini Untuk Menampilkan diBeranda Misal:
+    // Kopi Kenangan
+    // Makan & Minum . Metode . Tanggalnya
     override fun onBindViewHolder(holder: TransaksiViewHolder, position: Int) {
         val item = listTransaksi[position]
         val nominalBulat = item.nominal.toInt()
