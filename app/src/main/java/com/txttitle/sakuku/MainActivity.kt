@@ -1,5 +1,6 @@
 package com.txttitle.sakuku
 
+import android.content.res.ColorStateList
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -40,12 +41,12 @@ class MainActivity : AppCompatActivity() {
                 binding.bottomNav.selectedItemId = menuId
 
                 if (position == 2) {
-                    binding.btnNavCatat.setColorFilter(
-                        ContextCompat.getColor(this@MainActivity, R.color.lime_accent)
+                    binding.btnNavCatat.imageTintList = ColorStateList.valueOf(
+                        ContextCompat.getColor(this@MainActivity, R.color.pine_deep)
                     )
                 } else {
-                    binding.btnNavCatat.setColorFilter(
-                        ContextCompat.getColor(this@MainActivity, R.color.white)
+                    binding.btnNavCatat.imageTintList = ColorStateList.valueOf(
+                        ContextCompat.getColor(this@MainActivity, R.color.nav_plus_inactive)
                     )
                 }
             }

@@ -16,11 +16,11 @@ class SplashActivity : AppCompatActivity() {
         binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Delay 1.5 detik lalu pindah ke MainActivity
+        // Delay 0.8 detik lalu pindah ke MainActivity
         Handler(Looper.getMainLooper()).postDelayed({
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
             finish()
-        }, 1500)
+        }, 800)
     }
 }

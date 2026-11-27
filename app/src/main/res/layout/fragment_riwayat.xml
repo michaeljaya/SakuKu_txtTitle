@@ -116,7 +116,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:gravity="center"
-            android:text="Catat transaksi baru untuk mulai melacak arus kas Anda."
+            android:text="Tambah transaksi lewat tombol + di bawah."
             android:textColor="@color/text_muted"
             android:textSize="13sp"
             app:layout_constraintEnd_toEndOf="parent"

@@ -23,8 +23,8 @@
         android:id="@+id/bottomNav"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
-        app:backgroundTint="@color/white"
+        android:background="@color/pine_primary"
+        app:backgroundTint="@color/pine_primary"
         app:elevation="4dp"
         app:itemIconTint="@color/nav_item_color"
         app:itemTextColor="@color/nav_item_color"
@@ -33,7 +33,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/bottom_navigation_menu" />
 
-    <!-- Tombol Lingkaran Hijau (+) di Tengah Navbar -->
+    <!-- Tombol Lingkaran Aksen (+) di Tengah Navbar -->
     <ImageView
         android:id="@+id/btnNavCatat"
         android:layout_width="48dp"
@@ -47,6 +47,6 @@
         app:layout_constraintEnd_toEndOf="@+id/bottomNav"
         app:layout_constraintStart_toStartOf="@+id/bottomNav"
         app:layout_constraintTop_toTopOf="@+id/bottomNav"
-        app:tint="@color/white" />
+        app:tint="@color/nav_plus_inactive" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

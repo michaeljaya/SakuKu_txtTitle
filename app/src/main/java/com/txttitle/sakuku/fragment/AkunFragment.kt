@@ -7,16 +7,20 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.android.volley.DefaultRetryPolicy
 import com.android.volley.Request
+import com.android.volley.RequestQueue
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import com.txttitle.sakuku.R
 import com.txttitle.sakuku.databinding.FragmentAkunBinding
 import org.json.JSONObject
+import java.text.NumberFormat
+import java.util.Locale
 
 class AkunFragment : Fragment() {
 
     private lateinit var binding: FragmentAkunBinding
+    private var requestQueue: RequestQueue? = null
 
     private val PREF_NAME = "SakuKuPreferences"
     private val KEY_USER_NAME = "user_display_name"
@@ -32,7 +36,7 @@ class AkunFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // Akses SharedPreferences
-        val shared = requireActivity().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        val shared = requireContext().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
 
         // Nilai bawaan aplikasi: Nama kosong ("")
         val savedName = shared.getString(KEY_USER_NAME, "") ?: ""
@@ -60,7 +64,7 @@ class AkunFragment : Fragment() {
             val inputName = binding.edtUserName.text.toString().trim()
 
             if (inputName.isEmpty()) {
-                Toast.makeText(activity, "Silakan masukkan nama Anda!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Silakan masukkan nama Anda!", Toast.LENGTH_SHORT).show()
             } else {
                 // Simpan nama baru ke SharedPreferences
                 shared.edit().putString(KEY_USER_NAME, inputName).apply()
@@ -68,31 +72,46 @@ class AkunFragment : Fragment() {
                 // Update tampilan dan sembunyikan form
                 tampilkanNama(inputName)
                 binding.cardEditProfile.visibility = View.GONE
-                Toast.makeText(activity, "Nama profil berhasil disimpan!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Nama profil berhasil disimpan!", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
     override fun onResume() {
         super.onResume()
+        requestQueue?.cancelAll("AKUN")
         muatStatistik()
     }
 
-    // Mengambil status data & total transaksi via Volley
+    override fun onDestroyView() {
+        requestQueue?.cancelAll("AKUN")
+        super.onDestroyView()
+    }
+
+    private fun getQueue(): RequestQueue? {
+        val appCtx = context?.applicationContext ?: return null
+        if (requestQueue == null) {
+            requestQueue = Volley.newRequestQueue(appCtx)
+        }
+        return requestQueue
+    }
+
+    // Mengambil total transaksi via Volley
     private fun muatStatistik() {
+        val q = getQueue() ?: return
         val url = "http://10.0.2.2/sakuku/get_ringkasan.php"
-        val q = Volley.newRequestQueue(activity)
         val sr = StringRequest(
             Request.Method.GET,
             url,
             { response ->
-                if (activity != null) {
+                if (isAdded && view != null) {
                     try {
                         val obj = JSONObject(response)
                         if (obj.getString("result") == "SUCCESS") {
                             val data = obj.getJSONObject("data")
                             val totalTransaksi = data.optInt("total_transaksi", 0)
-                            binding.txtTotalCatatan.text = "$totalTransaksi Catatan"
+                            val formatJumlah = NumberFormat.getNumberInstance(Locale.forLanguageTag("id-ID"))
+                            binding.txtTotalCatatan.text = "${formatJumlah.format(totalTransaksi)} Catatan"
                         } else {
                             binding.txtTotalCatatan.text = "0 Catatan"
                         }
@@ -102,11 +121,15 @@ class AkunFragment : Fragment() {
                 }
             },
             {
-                if (activity != null) {
+                it.printStackTrace()
+                if (isAdded && view != null) {
                     binding.txtTotalCatatan.text = "0 Catatan"
                 }
             }
         )
+        sr.setShouldCache(false)
+        sr.retryPolicy = DefaultRetryPolicy(3000, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT)
+        sr.tag = "AKUN"
         q.add(sr)
     }
 

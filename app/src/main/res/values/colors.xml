@@ -9,6 +9,8 @@
     <color name="pine_deep">#0A382B</color>
     <color name="pine_subtle">#E6F2EE</color>
     <color name="lime_accent">#B8F255</color>
+    <color name="nav_inactive_on_pine">#B8D6CA</color>
+    <color name="nav_plus_inactive">#4B7562</color>
 
     <!-- Surface & Background -->
     <color name="canvas_stone">#F6F7F4</color>

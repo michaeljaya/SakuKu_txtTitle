@@ -5,7 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.android.volley.DefaultRetryPolicy
 import com.android.volley.Request
+import com.android.volley.RequestQueue
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.google.gson.Gson
@@ -14,10 +16,13 @@ import com.txttitle.sakuku.data.RingkasanData
 import com.txttitle.sakuku.data.TransaksiData
 import com.txttitle.sakuku.databinding.FragmentAnalisisBinding
 import org.json.JSONObject
+import java.text.NumberFormat
+import java.util.Locale
 
 class AnalisisFragment : Fragment() {
 
     private lateinit var binding: FragmentAnalisisBinding
+    private var requestQueue: RequestQueue? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -28,76 +33,107 @@ class AnalisisFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        requestQueue?.cancelAll("ANALISIS")
         loadRingkasanAnalisis()
         loadKomposisiKategori()
     }
 
+    override fun onDestroyView() {
+        requestQueue?.cancelAll("ANALISIS")
+        super.onDestroyView()
+    }
+
+    private fun getQueue(): RequestQueue? {
+        val appCtx = context?.applicationContext ?: return null
+        if (requestQueue == null) {
+            requestQueue = Volley.newRequestQueue(appCtx)
+        }
+        return requestQueue
+    }
+
+    private fun formatAngka(nilai: Double): String {
+        val formatter = NumberFormat.getNumberInstance(Locale.forLanguageTag("id-ID"))
+        formatter.maximumFractionDigits = 0
+        return formatter.format(nilai)
+    }
+
     private fun loadRingkasanAnalisis() {
+        val q = getQueue() ?: return
         val url = "http://10.0.2.2/sakuku/get_ringkasan.php"
-        val q = Volley.newRequestQueue(activity)
         val sr = StringRequest(
             Request.Method.GET,
             url,
             { response ->
-                if (activity != null) {
-                    val obj = JSONObject(response)
-                    if (obj.getString("result") == "SUCCESS") {
-                        val data = obj.getJSONObject("data")
-                        val ringkasan = Gson().fromJson(data.toString(), RingkasanData::class.java)
+                if (isAdded && view != null) {
+                    try {
+                        val obj = JSONObject(response)
+                        if (obj.getString("result") == "SUCCESS") {
+                            val data = obj.getJSONObject("data")
+                            val ringkasan = Gson().fromJson(data.toString(), RingkasanData::class.java)
 
-                        binding.txtAnalisisMasuk.text = "+Rp ${ringkasan.total_masuk.toInt()}"
-                        binding.txtAnalisisKeluar.text = "-Rp ${ringkasan.total_keluar.toInt()}"
+                            binding.txtAnalisisMasuk.text = "+Rp ${formatAngka(ringkasan.total_masuk)}"
+                            binding.txtAnalisisKeluar.text = "-Rp ${formatAngka(ringkasan.total_keluar)}"
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
                     }
                 }
             },
             { it.printStackTrace() }
         )
+        sr.setShouldCache(false)
+        sr.retryPolicy = DefaultRetryPolicy(3000, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT)
+        sr.tag = "ANALISIS"
         q.add(sr)
     }
 
     private fun loadKomposisiKategori() {
+        val q = getQueue() ?: return
         val url = "http://10.0.2.2/sakuku/get_transaksi.php"
-        val q = Volley.newRequestQueue(activity)
         val sr = object : StringRequest(
             Request.Method.POST,
             url,
             { response ->
-                if (activity != null) {
-                    val obj = JSONObject(response)
-                    if (obj.getString("result") == "SUCCESS") {
-                        val data = obj.getJSONArray("data")
-                        val sType = object : TypeToken<List<TransaksiData>>() {}.type
-                        val listKeluar = Gson().fromJson<ArrayList<TransaksiData>>(data.toString(), sType)
+                if (isAdded && view != null) {
+                    try {
+                        val obj = JSONObject(response)
+                        if (obj.getString("result") == "SUCCESS") {
+                            val data = obj.getJSONArray("data")
+                            val sType = object : TypeToken<List<TransaksiData>>() {}.type
+                            val listKeluar = Gson().fromJson<ArrayList<TransaksiData>>(data.toString(), sType)
 
-                        var totalKeluar = 0.0
-                        var totalMakan = 0.0
-                        var totalTagihan = 0.0
-                        var totalTransport = 0.0
+                            var totalKeluar = 0.0
+                            var totalMakan = 0.0
+                            var totalTagihan = 0.0
+                            var totalTransport = 0.0
 
-                        for (item in listKeluar) {
-                            totalKeluar += item.nominal
-                            when (item.kategori) {
-                                "Makan & Minum" -> totalMakan += item.nominal
-                                "Tagihan" -> totalTagihan += item.nominal
-                                "Transportasi" -> totalTransport += item.nominal
+                            for (item in listKeluar) {
+                                totalKeluar += item.nominal
+                                when (item.kategori) {
+                                    "Makan & Minum" -> totalMakan += item.nominal
+                                    "Tagihan" -> totalTagihan += item.nominal
+                                    "Transportasi" -> totalTransport += item.nominal
+                                }
                             }
+
+                            val pMakan = if (totalKeluar > 0) ((totalMakan / totalKeluar) * 100).toInt() else 0
+                            val pTagihan = if (totalKeluar > 0) ((totalTagihan / totalKeluar) * 100).toInt() else 0
+                            val pTransport = if (totalKeluar > 0) ((totalTransport / totalKeluar) * 100).toInt() else 0
+
+                            binding.lblKatMakan.text = "Makan & Minum ($pMakan%)"
+                            binding.progMakan.max = 100
+                            binding.progMakan.progress = pMakan
+
+                            binding.lblKatTagihan.text = "Tagihan ($pTagihan%)"
+                            binding.progTagihan.max = 100
+                            binding.progTagihan.progress = pTagihan
+
+                            binding.lblKatTransport.text = "Transportasi ($pTransport%)"
+                            binding.progTransport.max = 100
+                            binding.progTransport.progress = pTransport
                         }
-
-                        val pMakan = if (totalKeluar > 0) ((totalMakan / totalKeluar) * 100).toInt() else 0
-                        val pTagihan = if (totalKeluar > 0) ((totalTagihan / totalKeluar) * 100).toInt() else 0
-                        val pTransport = if (totalKeluar > 0) ((totalTransport / totalKeluar) * 100).toInt() else 0
-
-                        binding.lblKatMakan.text = "Makan & Minum ($pMakan%)"
-                        binding.progMakan.max = 100
-                        binding.progMakan.progress = pMakan
-
-                        binding.lblKatTagihan.text = "Tagihan Rutin & Listrik ($pTagihan%)"
-                        binding.progTagihan.max = 100
-                        binding.progTagihan.progress = pTagihan
-
-                        binding.lblKatTransport.text = "Transportasi ($pTransport%)"
-                        binding.progTransport.max = 100
-                        binding.progTransport.progress = pTransport
+                    } catch (e: Exception) {
+                        e.printStackTrace()
                     }
                 }
             },
@@ -107,6 +143,9 @@ class AnalisisFragment : Fragment() {
                 "tipe" to "PENGELUARAN"
             )
         }
+        sr.setShouldCache(false)
+        sr.retryPolicy = DefaultRetryPolicy(3000, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT)
+        sr.tag = "ANALISIS"
         q.add(sr)
     }
 }
