@@ -58,16 +58,64 @@
                 android:layout_width="44dp"
                 android:layout_height="44dp"
                 android:layout_marginEnd="16dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:clickable="true"
                 android:contentDescription="Status Data"
-                android:focusable="true"
                 android:padding="10dp"
                 android:src="@drawable/baseline_cloud_off_24"
                 app:layout_constraintBottom_toBottomOf="@+id/txtGreeting"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/txtAppTitle"
                 app:tint="@color/expense_rose" />
+
+            <!-- Banner Gagal Koneksi Server -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardErrorBeranda"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="16dp"
+                android:visibility="gone"
+                app:cardBackgroundColor="@color/surface_white"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="2dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txtGreeting"
+                tools:visibility="gone">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="14dp">
+
+                    <TextView
+                        android:id="@+id/txtErrorBeranda"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="12dp"
+                        android:text="Gagal memuat data dari server. Pastikan server aktif."
+                        android:textColor="@color/expense_rose"
+                        android:textSize="12sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/btnCobaLagiBeranda"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnCobaLagiBeranda"
+                        android:layout_width="wrap_content"
+                        android:layout_height="48dp"
+                        android:backgroundTint="@color/pine_primary"
+                        android:minWidth="88dp"
+                        android:text="Coba Lagi"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:textSize="12sp"
+                        app:cornerRadius="10dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
 
             <!-- Card Utama Saldo -->
             <androidx.cardview.widget.CardView
@@ -81,7 +129,7 @@
                 app:cardElevation="4dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/txtGreeting">
+                app:layout_constraintTop_toBottomOf="@+id/cardErrorBeranda">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -212,17 +260,22 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                    <ProgressBar
+                    <com.google.android.material.progressindicator.LinearProgressIndicator
                         android:id="@+id/progressAnggaran"
-                        style="?android:attr/progressBarStyleHorizontal"
                         android:layout_width="0dp"
-                        android:layout_height="8dp"
+                        android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
+                        android:max="10000"
                         android:progress="0"
-                        android:progressTint="@color/pine_primary"
+                        app:indicatorColor="@color/pine_primary"
+                        app:indicatorTrackGapSize="0dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/lblAnggaran" />
+                        app:layout_constraintTop_toBottomOf="@+id/lblAnggaran"
+                        app:trackColor="@color/surface_muted"
+                        app:trackCornerRadius="4dp"
+                        app:trackStopIndicatorSize="0dp"
+                        app:trackThickness="8dp" />
 
                     <TextView
                         android:id="@+id/txtKetAnggaran"

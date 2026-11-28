@@ -3,6 +3,7 @@ package com.txttitle.sakuku
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.DefaultRetryPolicy
 import com.android.volley.Request
@@ -80,11 +81,20 @@ class DetailTransaksiActivity : AppCompatActivity() {
             }
         }
 
-        // Tombol Hapus Catatan
+        // Tampilkan AlertDialog sebelum hapus agar tidak terhapus tidak sengaja saat salah tekan
         binding.btnHapus.setOnClickListener {
-            if (transaksi != null) {
-                hapusTransaksi(transaksi!!.id)
+            val item = transaksi ?: return@setOnClickListener
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle("Hapus Transaksi")
+            builder.setMessage("Apakah Anda yakin ingin menghapus catatan \"${item.judul}\"?")
+            builder.setPositiveButton("Hapus") { dialog, _ ->
+                dialog.dismiss()
+                hapusTransaksi(item.id)
             }
+            builder.setNegativeButton("Batal") { dialog, _ ->
+                dialog.dismiss()
+            }
+            builder.create().show()
         }
     }
 

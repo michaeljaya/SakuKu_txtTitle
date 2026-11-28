@@ -5,37 +5,110 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/canvas_stone"
+    android:clipChildren="false"
+    android:clipToPadding="false"
     android:fillViewport="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="20dp"
-        android:paddingBottom="96dp">
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:paddingStart="16dp"
+        android:paddingTop="20dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="16dp">
 
         <TextView
             android:id="@+id/txtAnalisisHeader"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp"
             android:text="Analisis Keuangan"
             android:textColor="@color/text_primary"
             android:textSize="22sp"
             android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/imgStatusAnalisis"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/txtAnalisisSub"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
-            android:text="Ringkasan uang masuk dan keluar"
+            android:layout_marginEnd="12dp"
+            android:text="Ringkasan arus kas, kategori, dan kantong"
             android:textColor="@color/text_muted"
             android:textSize="13sp"
+            app:layout_constraintEnd_toStartOf="@+id/imgStatusAnalisis"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/txtAnalisisHeader" />
 
-        <!-- Card Evaluasi Arus Kas Bersih -->
+        <!-- Ikon Status Koneksi Server -->
+        <ImageView
+            android:id="@+id/imgStatusAnalisis"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:contentDescription="Status Data Analisis"
+            android:padding="10dp"
+            android:src="@drawable/baseline_cloud_done_24"
+            app:layout_constraintBottom_toBottomOf="@+id/txtAnalisisSub"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/txtAnalisisHeader"
+            app:tint="@color/pine_primary" />
+
+        <!-- Banner Gagal Koneksi Server -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardErrorAnalisis"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:visibility="gone"
+            app:cardBackgroundColor="@color/surface_white"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="2dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txtAnalisisSub"
+            tools:visibility="gone">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="14dp">
+
+                <TextView
+                    android:id="@+id/txtErrorAnalisis"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="12dp"
+                    android:text="Gagal memuat data dari server. Pastikan server aktif."
+                    android:textColor="@color/expense_rose"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/btnCobaLagiAnalisis"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnCobaLagiAnalisis"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:backgroundTint="@color/pine_primary"
+                    android:minWidth="88dp"
+                    android:text="Coba Lagi"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="12sp"
+                    app:cornerRadius="10dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Card 1: Ringkasan Arus Kas -->
         <androidx.cardview.widget.CardView
             android:id="@+id/cardArusKas"
             android:layout_width="0dp"
@@ -43,10 +116,10 @@
             android:layout_marginTop="16dp"
             app:cardBackgroundColor="@color/surface_white"
             app:cardCornerRadius="14dp"
-            app:cardElevation="2dp"
+            app:cardElevation="1dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txtAnalisisSub">
+            app:layout_constraintTop_toBottomOf="@+id/cardErrorAnalisis">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -55,16 +128,42 @@
 
                 <TextView
                     android:id="@+id/lblArusKas"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Ringkasan Bulan Ini"
+                    android:layout_marginEnd="12dp"
+                    android:text="Ringkasan Arus Kas"
                     android:textColor="@color/text_primary"
                     android:textSize="15sp"
                     android:textStyle="bold"
+                    app:layout_constraintEnd_toStartOf="@+id/cardJumlahTransaksiAnalisis"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <!-- Total Masuk -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardJumlahTransaksiAnalisis"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:cardBackgroundColor="@color/pine_subtle"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="0dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/lblArusKas"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/lblArusKas">
+
+                    <TextView
+                        android:id="@+id/txtJumlahTransaksiAnalisis"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="10dp"
+                        android:paddingTop="4dp"
+                        android:paddingEnd="10dp"
+                        android:paddingBottom="4dp"
+                        android:text="0 transaksi"
+                        android:textColor="@color/pine_primary"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+                </androidx.cardview.widget.CardView>
+
                 <TextView
                     android:id="@+id/lblTotalMasukAnalisis"
                     android:layout_width="wrap_content"
@@ -88,7 +187,6 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/lblTotalMasukAnalisis" />
 
-                <!-- Total Keluar -->
                 <TextView
                     android:id="@+id/lblTotalKeluarAnalisis"
                     android:layout_width="wrap_content"
@@ -112,21 +210,366 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/lblTotalKeluarAnalisis" />
 
+                <View
+                    android:id="@+id/dividerArusKas"
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="14dp"
+                    android:background="@color/surface_muted"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/txtAnalisisMasuk" />
+
+                <TextView
+                    android:id="@+id/lblSelisihAnalisis"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="Arus Kas Bersih"
+                    android:textColor="@color/text_muted"
+                    android:textSize="12sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/dividerArusKas" />
+
+                <TextView
+                    android:id="@+id/txtSelisihAnalisis"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Rp 0"
+                    android:textColor="@color/pine_primary"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/lblSelisihAnalisis" />
+
+                <TextView
+                    android:id="@+id/lblRataKeluarAnalisis"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="Rata-rata Keluar"
+                    android:textColor="@color/text_muted"
+                    android:textSize="12sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/dividerArusKas" />
+
+                <TextView
+                    android:id="@+id/txtRataKeluarAnalisis"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Rp 0 / transaksi"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/lblRataKeluarAnalisis" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Card Rincian Kategori Pengeluaran -->
+        <!-- Card 2: Pengeluaran per Kategori (6 kategori + nominal) -->
         <androidx.cardview.widget.CardView
             android:id="@+id/cardKomposisi"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="14dp"
             app:cardBackgroundColor="@color/surface_white"
             app:cardCornerRadius="14dp"
-            app:cardElevation="2dp"
+            app:cardElevation="1dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cardArusKas">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:id="@+id/lblKomposisi"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Pengeluaran per Kategori"
+                    android:textColor="@color/text_primary"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txtKosongKategori"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="Belum ada pengeluaran tercatat. Catat pengeluaran di tab Catat untuk melihat porsi tiap kategori."
+                    android:textColor="@color/text_muted"
+                    android:textSize="12sp"
+                    android:visibility="gone"
+                    tools:visibility="gone" />
+
+                <LinearLayout
+                    android:id="@+id/containerKategori"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <!-- 1. Makan & Minum -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/lblKatMakan"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Makan &amp; Minum (0%)"
+                            android:textColor="@color/text_primary"
+                            android:textSize="13sp" />
+
+                        <TextView
+                            android:id="@+id/txtNomMakan"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Rp 0"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <com.google.android.material.progressindicator.LinearProgressIndicator
+                        android:id="@+id/progMakan"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:max="100"
+                        android:progress="0"
+                        app:indicatorColor="@color/pine_primary"
+                        app:indicatorTrackGapSize="0dp"
+                        app:trackColor="@color/surface_muted"
+                        app:trackCornerRadius="4dp"
+                        app:trackStopIndicatorSize="0dp"
+                        app:trackThickness="8dp" />
+
+                    <!-- 2. Tagihan -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/lblKatTagihan"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Tagihan (0%)"
+                            android:textColor="@color/text_primary"
+                            android:textSize="13sp" />
+
+                        <TextView
+                            android:id="@+id/txtNomTagihan"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Rp 0"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <com.google.android.material.progressindicator.LinearProgressIndicator
+                        android:id="@+id/progTagihan"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:max="100"
+                        android:progress="0"
+                        app:indicatorColor="@color/budget_amber"
+                        app:indicatorTrackGapSize="0dp"
+                        app:trackColor="@color/surface_muted"
+                        app:trackCornerRadius="4dp"
+                        app:trackStopIndicatorSize="0dp"
+                        app:trackThickness="8dp" />
+
+                    <!-- 3. Transportasi -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/lblKatTransport"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Transportasi (0%)"
+                            android:textColor="@color/text_primary"
+                            android:textSize="13sp" />
+
+                        <TextView
+                            android:id="@+id/txtNomTransport"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Rp 0"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <com.google.android.material.progressindicator.LinearProgressIndicator
+                        android:id="@+id/progTransport"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:max="100"
+                        android:progress="0"
+                        app:indicatorColor="@color/expense_rose"
+                        app:indicatorTrackGapSize="0dp"
+                        app:trackColor="@color/surface_muted"
+                        app:trackCornerRadius="4dp"
+                        app:trackStopIndicatorSize="0dp"
+                        app:trackThickness="8dp" />
+
+                    <!-- 4. Belanja -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/lblKatBelanja"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Belanja (0%)"
+                            android:textColor="@color/text_primary"
+                            android:textSize="13sp" />
+
+                        <TextView
+                            android:id="@+id/txtNomBelanja"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Rp 0"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <com.google.android.material.progressindicator.LinearProgressIndicator
+                        android:id="@+id/progBelanja"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:max="100"
+                        android:progress="0"
+                        app:indicatorColor="@color/pine_deep"
+                        app:indicatorTrackGapSize="0dp"
+                        app:trackColor="@color/surface_muted"
+                        app:trackCornerRadius="4dp"
+                        app:trackStopIndicatorSize="0dp"
+                        app:trackThickness="8dp" />
+
+                    <!-- 5. Kesehatan -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/lblKatKesehatan"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Kesehatan (0%)"
+                            android:textColor="@color/text_primary"
+                            android:textSize="13sp" />
+
+                        <TextView
+                            android:id="@+id/txtNomKesehatan"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Rp 0"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <com.google.android.material.progressindicator.LinearProgressIndicator
+                        android:id="@+id/progKesehatan"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:max="100"
+                        android:progress="0"
+                        app:indicatorColor="@color/income_green"
+                        app:indicatorTrackGapSize="0dp"
+                        app:trackColor="@color/surface_muted"
+                        app:trackCornerRadius="4dp"
+                        app:trackStopIndicatorSize="0dp"
+                        app:trackThickness="8dp" />
+
+                    <!-- 6. Lainnya -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/lblKatLainnya"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Lainnya (0%)"
+                            android:textColor="@color/text_primary"
+                            android:textSize="13sp" />
+
+                        <TextView
+                            android:id="@+id/txtNomLainnya"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Rp 0"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <com.google.android.material.progressindicator.LinearProgressIndicator
+                        android:id="@+id/progLainnya"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:max="100"
+                        android:progress="0"
+                        app:indicatorColor="@color/text_muted"
+                        app:indicatorTrackGapSize="0dp"
+                        app:trackColor="@color/surface_muted"
+                        app:trackCornerRadius="4dp"
+                        app:trackStopIndicatorSize="0dp"
+                        app:trackThickness="8dp" />
+                </LinearLayout>
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Card 3: Kebutuhan Prioritas vs Biasa -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardPrioritas"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            app:cardBackgroundColor="@color/surface_white"
+            app:cardCornerRadius="14dp"
+            app:cardElevation="1dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cardKomposisi">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -134,89 +577,618 @@
                 android:padding="16dp">
 
                 <TextView
-                    android:id="@+id/lblKomposisi"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/lblPrioritasJudul"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Pengeluaran per Kategori"
+                    android:text="Prioritas vs Biasa"
                     android:textColor="@color/text_primary"
                     android:textSize="15sp"
                     android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <!-- Item 1: Makan & Minum -->
-                <TextView
-                    android:id="@+id/lblKatMakan"
-                    android:layout_width="wrap_content"
+                <com.google.android.material.progressindicator.LinearProgressIndicator
+                    android:id="@+id/progPrioritas"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="14dp"
-                    android:text="Makan &amp; Minum (0%)"
-                    android:textColor="@color/text_primary"
-                    android:textSize="13sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/lblKomposisi" />
-
-                <ProgressBar
-                    android:id="@+id/progMakan"
-                    style="?android:attr/progressBarStyleHorizontal"
-                    android:layout_width="0dp"
-                    android:layout_height="8dp"
-                    android:layout_marginTop="6dp"
+                    android:max="100"
                     android:progress="0"
-                    android:progressTint="@color/pine_primary"
+                    app:indicatorColor="@color/pine_primary"
+                    app:indicatorTrackGapSize="2dp"
+                    app:trackColor="@color/border_control"
+                    app:trackCornerRadius="6dp"
+                    app:trackStopIndicatorSize="0dp"
+                    app:trackThickness="10dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/lblKatMakan" />
+                    app:layout_constraintTop_toBottomOf="@+id/lblPrioritasJudul" />
 
-                <!-- Item 2: Tagihan Rutin -->
                 <TextView
-                    android:id="@+id/lblKatTagihan"
+                    android:id="@+id/lblPrioPokok"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="14dp"
-                    android:text="Tagihan (0%)"
-                    android:textColor="@color/text_primary"
-                    android:textSize="13sp"
+                    android:layout_marginTop="12dp"
+                    android:text="Pokok / Prioritas (0%)"
+                    android:textColor="@color/pine_primary"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/progMakan" />
+                    app:layout_constraintTop_toBottomOf="@+id/progPrioritas" />
 
-                <ProgressBar
-                    android:id="@+id/progTagihan"
-                    style="?android:attr/progressBarStyleHorizontal"
-                    android:layout_width="0dp"
-                    android:layout_height="8dp"
-                    android:layout_marginTop="6dp"
-                    android:progress="0"
-                    android:progressTint="@color/budget_amber"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/lblKatTagihan" />
-
-                <!-- Item 3: Transportasi -->
                 <TextView
-                    android:id="@+id/lblKatTransport"
+                    android:id="@+id/txtNomPrioPokok"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="14dp"
-                    android:text="Transportasi (0%)"
+                    android:layout_marginTop="2dp"
+                    android:text="Rp 0"
                     android:textColor="@color/text_primary"
-                    android:textSize="13sp"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/progTagihan" />
+                    app:layout_constraintTop_toBottomOf="@+id/lblPrioPokok" />
 
-                <ProgressBar
-                    android:id="@+id/progTransport"
-                    style="?android:attr/progressBarStyleHorizontal"
-                    android:layout_width="0dp"
-                    android:layout_height="8dp"
-                    android:layout_marginTop="6dp"
-                    android:progress="0"
-                    android:progressTint="@color/expense_rose"
+                <TextView
+                    android:id="@+id/lblPrioBiasa"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="Biasa (0%)"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/lblKatTransport" />
+                    app:layout_constraintTop_toBottomOf="@+id/progPrioritas" />
+
+                <TextView
+                    android:id="@+id/txtNomPrioBiasa"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Rp 0"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/lblPrioBiasa" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Card 4: Pengeluaran per Kantong / Metode Bayar -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardKantong"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            app:cardBackgroundColor="@color/surface_white"
+            app:cardCornerRadius="14dp"
+            app:cardElevation="1dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cardPrioritas">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Pengeluaran per Kantong"
+                    android:textColor="@color/text_primary"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txtKosongKantong"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="Belum ada pengeluaran dari kantong mana pun."
+                    android:textColor="@color/text_muted"
+                    android:textSize="12sp"
+                    android:visibility="gone"
+                    tools:visibility="gone" />
+
+                <LinearLayout
+                    android:id="@+id/containerKantong"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:orientation="vertical">
+
+                    <!-- Tunai -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingVertical="8dp">
+
+                        <TextView
+                            android:id="@+id/lblKanTunai"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Tunai (0%)"
+                            android:textColor="@color/text_primary"
+                            android:textSize="13sp" />
+
+                        <TextView
+                            android:id="@+id/txtNomTunai"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Rp 0"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/surface_muted" />
+
+                    <!-- Bank BCA -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingVertical="8dp">
+
+                        <TextView
+                            android:id="@+id/lblKanBca"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Bank BCA (0%)"
+                            android:textColor="@color/text_primary"
+                            android:textSize="13sp" />
+
+                        <TextView
+                            android:id="@+id/txtNomBca"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Rp 0"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/surface_muted" />
+
+                    <!-- GoPay -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingVertical="8dp">
+
+                        <TextView
+                            android:id="@+id/lblKanGopay"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="GoPay (0%)"
+                            android:textColor="@color/text_primary"
+                            android:textSize="13sp" />
+
+                        <TextView
+                            android:id="@+id/txtNomGopay"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Rp 0"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/surface_muted" />
+
+                    <!-- OVO -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingVertical="8dp">
+
+                        <TextView
+                            android:id="@+id/lblKanOvo"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="OVO (0%)"
+                            android:textColor="@color/text_primary"
+                            android:textSize="13sp" />
+
+                        <TextView
+                            android:id="@+id/txtNomOvo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Rp 0"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/surface_muted" />
+
+                    <!-- ShopeePay -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingVertical="8dp">
+
+                        <TextView
+                            android:id="@+id/lblKanShopeepay"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="ShopeePay (0%)"
+                            android:textColor="@color/text_primary"
+                            android:textSize="13sp" />
+
+                        <TextView
+                            android:id="@+id/txtNomShopeepay"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Rp 0"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Card 5: 3 Pengeluaran Terbesar -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardTopPengeluaran"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            app:cardBackgroundColor="@color/surface_white"
+            app:cardCornerRadius="14dp"
+            app:cardElevation="1dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cardKantong">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Pengeluaran Terbesar"
+                    android:textColor="@color/text_primary"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txtKosongTop"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="Belum ada transaksi pengeluaran tercatat."
+                    android:textColor="@color/text_muted"
+                    android:textSize="12sp"
+                    android:visibility="gone"
+                    tools:visibility="gone" />
+
+                <!-- Row Top 1 -->
+                <LinearLayout
+                    android:id="@+id/rowTop1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:minHeight="48dp"
+                    android:orientation="horizontal"
+                    android:paddingVertical="6dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/txtTopJudul1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:text="Belum ada data"
+                            android:textColor="@color/text_primary"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/txtTopSub1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:text="-"
+                            android:textColor="@color/text_muted"
+                            android:textSize="11sp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/txtTopNom1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="-Rp 0"
+                        android:textColor="@color/expense_rose"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/divTop1"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/surface_muted" />
+
+                <!-- Row Top 2 -->
+                <LinearLayout
+                    android:id="@+id/rowTop2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:minHeight="48dp"
+                    android:orientation="horizontal"
+                    android:paddingVertical="8dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/txtTopJudul2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:text="Belum ada data"
+                            android:textColor="@color/text_primary"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/txtTopSub2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:text="-"
+                            android:textColor="@color/text_muted"
+                            android:textSize="11sp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/txtTopNom2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="-Rp 0"
+                        android:textColor="@color/expense_rose"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/divTop2"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/surface_muted" />
+
+                <!-- Row Top 3 -->
+                <LinearLayout
+                    android:id="@+id/rowTop3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:minHeight="48dp"
+                    android:orientation="horizontal"
+                    android:paddingVertical="8dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/txtTopJudul3"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:text="Belum ada data"
+                            android:textColor="@color/text_primary"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/txtTopSub3"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:text="-"
+                            android:textColor="@color/text_muted"
+                            android:textSize="11sp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/txtTopNom3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="-Rp 0"
+                        android:textColor="@color/expense_rose"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Card 6: Sumber Pemasukan -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardSumberMasuk"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            app:cardBackgroundColor="@color/surface_white"
+            app:cardCornerRadius="14dp"
+            app:cardElevation="1dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cardTopPengeluaran">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Sumber Pemasukan"
+                    android:textColor="@color/text_primary"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txtKosongMasuk"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="Belum ada pemasukan tercatat."
+                    android:textColor="@color/text_muted"
+                    android:textSize="12sp"
+                    android:visibility="gone"
+                    tools:visibility="gone" />
+
+                <LinearLayout
+                    android:id="@+id/containerMasuk"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingVertical="8dp">
+
+                        <TextView
+                            android:id="@+id/lblMasukGaji"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Gaji (0%)"
+                            android:textColor="@color/text_primary"
+                            android:textSize="13sp" />
+
+                        <TextView
+                            android:id="@+id/txtNomMasukGaji"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="+Rp 0"
+                            android:textColor="@color/income_green"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/surface_muted" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingVertical="8dp">
+
+                        <TextView
+                            android:id="@+id/lblMasukBonus"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Bonus (0%)"
+                            android:textColor="@color/text_primary"
+                            android:textSize="13sp" />
+
+                        <TextView
+                            android:id="@+id/txtNomMasukBonus"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="+Rp 0"
+                            android:textColor="@color/income_green"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/surface_muted" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingVertical="8dp">
+
+                        <TextView
+                            android:id="@+id/lblMasukLainnya"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Lainnya (0%)"
+                            android:textColor="@color/text_primary"
+                            android:textSize="13sp" />
+
+                        <TextView
+                            android:id="@+id/txtNomMasukLainnya"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="+Rp 0"
+                            android:textColor="@color/income_green"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
         </androidx.cardview.widget.CardView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

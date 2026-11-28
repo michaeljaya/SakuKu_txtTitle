@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -33,6 +32,8 @@ class BerandaFragment : Fragment() {
     var recentList: ArrayList<TransaksiData> = ArrayList()
     private var isDataTerhubung = false
     private var requestQueue: RequestQueue? = null
+    private var permintaanAktif = 0
+    private var adaGagalMuat = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -49,27 +50,43 @@ class BerandaFragment : Fragment() {
             activity?.findViewById<BottomNavigationView>(R.id.bottomNav)?.selectedItemId = R.id.itemRiwayat
         }
 
-        // Klik ikon status untuk langsung cek ulang koneksi server tersambung / terputus
-        binding.imgStatusData.setOnClickListener {
-            binding.imgStatusData.alpha = 0.45f
-            requestQueue?.cancelAll("BERANDA")
-            loadRingkasan(tampilkanPesan = true)
-            loadRecentTransaksi()
+        binding.btnCobaLagiBeranda.setOnClickListener {
+            muatSemuaBeranda()
         }
     }
 
     override fun onResume() {
         super.onResume()
         updateGreeting()
-        binding.imgStatusData.alpha = 0.6f
-        requestQueue?.cancelAll("BERANDA")
-        loadRingkasan(tampilkanPesan = false)
-        loadRecentTransaksi()
+        muatSemuaBeranda()
     }
 
     override fun onDestroyView() {
         requestQueue?.cancelAll("BERANDA")
         super.onDestroyView()
+    }
+
+    // Beranda memakai 2 request paralel, ikon awan baru diperbarui setelah keduanya selesai
+    private fun muatSemuaBeranda() {
+        requestQueue?.cancelAll("BERANDA")
+        permintaanAktif = 2
+        adaGagalMuat = false
+        binding.cardErrorBeranda.visibility = View.GONE
+        binding.imgStatusData.alpha = 0.45f
+        loadRingkasan()
+        loadRecentTransaksi()
+    }
+
+    private fun tandaiPermintaanSelesai(berhasil: Boolean) {
+        if (!isAdded || view == null) return
+        if (!berhasil) {
+            adaGagalMuat = true
+            binding.cardErrorBeranda.visibility = View.VISIBLE
+        }
+        permintaanAktif = (permintaanAktif - 1).coerceAtLeast(0)
+        if (permintaanAktif == 0) {
+            updateStatusData(!adaGagalMuat)
+        }
     }
 
     private fun getQueue(): RequestQueue? {
@@ -87,8 +104,8 @@ class BerandaFragment : Fragment() {
         return formatter.format(nilai)
     }
 
-    // untuk perbarui warna & ikon status koneksi server
-    private fun updateStatusData(terhubung: Boolean, tampilkanPesan: Boolean = false) {
+    // Perbarui warna & ikon status koneksi server
+    private fun updateStatusData(terhubung: Boolean) {
         if (!isAdded || view == null) return
         isDataTerhubung = terhubung
         binding.imgStatusData.alpha = 1.0f
@@ -103,14 +120,6 @@ class BerandaFragment : Fragment() {
                 binding.imgStatusData.imageTintList = ColorStateList.valueOf(
                     ContextCompat.getColor(ctx, R.color.expense_rose)
                 )
-            }
-            if (tampilkanPesan) {
-                val pesan = if (terhubung) {
-                    "Status Data: Tersambung ke server"
-                } else {
-                    "Status Data: Terputus dari server"
-                }
-                Toast.makeText(ctx, pesan, Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -128,7 +137,7 @@ class BerandaFragment : Fragment() {
     }
 
     // Ambil ringkasan saldo, pemasukan, pengeluaran dari get_ringkasan.php
-    private fun loadRingkasan(tampilkanPesan: Boolean) {
+    private fun loadRingkasan() {
         val q = getQueue() ?: return
         val url = "http://10.0.2.2/sakuku/get_ringkasan.php"
         val sr = StringRequest(
@@ -136,10 +145,10 @@ class BerandaFragment : Fragment() {
             url,
             { response ->
                 if (isAdded && view != null) {
+                    var berhasil = false
                     try {
                         val obj = JSONObject(response)
                         if (obj.getString("result") == "SUCCESS") {
-                            updateStatusData(true, tampilkanPesan)
                             val data = obj.getJSONObject("data")
                             val ringkasan = Gson().fromJson(data.toString(), RingkasanData::class.java)
 
@@ -151,7 +160,7 @@ class BerandaFragment : Fragment() {
                             binding.txtTotalMasuk.text = "+Rp ${formatAngka(ringkasan.total_masuk)}"
                             binding.txtTotalKeluar.text = "-Rp ${formatAngka(ringkasan.total_keluar)}"
 
-                            // Hitung persentase pemakaian pemasukan menggunakan double agar nilai < 1% terlihat
+                            // (total_keluar / total_masuk) * 100. Contoh: (164.000 / 10.100.000) * 100 = 1,62%
                             val persen = if (ringkasan.total_masuk > 0) {
                                 (ringkasan.total_keluar / ringkasan.total_masuk) * 100.0
                             } else if (ringkasan.total_keluar > 0) {
@@ -176,19 +185,17 @@ class BerandaFragment : Fragment() {
                             } else {
                                 binding.txtKetAnggaran.text = "Pengeluaran masih di bawah pemasukan."
                             }
-                        } else {
-                            updateStatusData(false, tampilkanPesan)
+                            berhasil = true
                         }
                     } catch (e: Exception) {
-                        updateStatusData(false, tampilkanPesan)
+                        e.printStackTrace()
                     }
+                    tandaiPermintaanSelesai(berhasil)
                 }
             },
             {
                 it.printStackTrace()
-                if (isAdded && view != null) {
-                    updateStatusData(false, tampilkanPesan)
-                }
+                tandaiPermintaanSelesai(false)
             }
         )
         sr.setShouldCache(false)
@@ -206,6 +213,7 @@ class BerandaFragment : Fragment() {
             url,
             { response ->
                 if (isAdded && view != null) {
+                    var berhasil = false
                     try {
                         val obj = JSONObject(response)
                         if (obj.getString("result") == "SUCCESS") {
@@ -224,19 +232,17 @@ class BerandaFragment : Fragment() {
                                 setHasFixedSize(true)
                                 adapter = TransaksiAdapter(recentList)
                             }
-                        } else {
-                            updateStatusData(false)
+                            berhasil = true
                         }
                     } catch (e: Exception) {
-                        updateStatusData(false)
+                        e.printStackTrace()
                     }
+                    tandaiPermintaanSelesai(berhasil)
                 }
             },
             {
                 it.printStackTrace()
-                if (isAdded && view != null) {
-                    updateStatusData(false)
-                }
+                tandaiPermintaanSelesai(false)
             }
         )
         sr.setShouldCache(false)

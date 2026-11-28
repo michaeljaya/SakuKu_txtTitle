@@ -4,57 +4,40 @@ import android.content.res.ColorStateList
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.txttitle.sakuku.adapter.VIewPagerAdapter
 import com.txttitle.sakuku.databinding.ActivityMainBinding
-import com.txttitle.sakuku.fragment.AkunFragment
-import com.txttitle.sakuku.fragment.AnalisisFragment
-import com.txttitle.sakuku.fragment.BerandaFragment
-import com.txttitle.sakuku.fragment.CatatFragment
-import com.txttitle.sakuku.fragment.RiwayatFragment
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private val fragments: ArrayList<Fragment> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Inisialisasi 5 fragment sesuai urutan navbar
-        fragments.add(BerandaFragment())
-        fragments.add(RiwayatFragment())
-        fragments.add(CatatFragment())
-        fragments.add(AnalisisFragment())
-        fragments.add(AkunFragment())
+        binding.viewPager.adapter = VIewPagerAdapter(this)
+        // Jaga view ke-5 tab tetap siap agar animasi geser mulus tanpa kedip kosong
+        binding.viewPager.offscreenPageLimit = 4
 
-        // Setup viewpager
-        binding.viewPager.adapter = VIewPagerAdapter(this, fragments)
-
-        // Handle perubahan halaman (swipe)
         binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 val menuId = binding.bottomNav.menu.getItem(position).itemId
-                binding.bottomNav.selectedItemId = menuId
-
-                if (position == 2) {
-                    binding.btnNavCatat.imageTintList = ColorStateList.valueOf(
-                        ContextCompat.getColor(this@MainActivity, R.color.pine_deep)
-                    )
-                } else {
-                    binding.btnNavCatat.imageTintList = ColorStateList.valueOf(
-                        ContextCompat.getColor(this@MainActivity, R.color.nav_plus_inactive)
-                    )
+                // Cegah loop balik dengan OnItemSelectedListener saat tab sudah sesuai
+                if (binding.bottomNav.selectedItemId != menuId) {
+                    binding.bottomNav.selectedItemId = menuId
                 }
+
+                val tintCatat = if (position == 2) R.color.pine_deep else R.color.nav_plus_inactive
+                binding.btnNavCatat.imageTintList = ColorStateList.valueOf(
+                    ContextCompat.getColor(this@MainActivity, tintCatat)
+                )
             }
         })
 
-        // Handle klik bottom nav
         binding.bottomNav.setOnItemSelectedListener {
-            binding.viewPager.currentItem = when (it.itemId) {
+            val target = when (it.itemId) {
                 R.id.itemBeranda -> 0
                 R.id.itemRiwayat -> 1
                 R.id.itemCatat -> 2
@@ -62,12 +45,18 @@ class MainActivity : AppCompatActivity() {
                 R.id.itemAkun -> 4
                 else -> 0
             }
+            // Buka langsung hanya jika posisi tujuan belum aktif
+            if (binding.viewPager.currentItem != target) {
+                binding.viewPager.setCurrentItem(target, true)
+            }
             true
         }
 
-        // Handle klik tombol lingkaran tengah (+)
+        // Arahkan tombol (+) tengah navbar ke tab Catat (indeks 2)
         binding.btnNavCatat.setOnClickListener {
-            binding.viewPager.currentItem = 2
+            if (binding.viewPager.currentItem != 2) {
+                binding.viewPager.setCurrentItem(2, true)
+            }
         }
     }
 }
